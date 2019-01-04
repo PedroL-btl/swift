@@ -34,6 +34,38 @@ extension UIImageView{
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+extension UIViewController {
+    class func displaySpinner(onView : UIView, withView: UIView? = nil) -> UIView {
+        let spinnerView = UIView.init(frame: onView.bounds)
+        if withView != nil{
+            withView!.frame = onView.bounds
+            spinnerView.addSubview(withView!)
+        }
+        spinnerView.backgroundColor = UIColor.init(red: 0.5, green: 0.5, blue: 0.5, alpha: 0.5)
+        let ai = UIActivityIndicatorView.init(activityIndicatorStyle: .whiteLarge)
+        ai.startAnimating()
+        //ai.center = spinnerView.center
+        ai.center = CGPoint(x:spinnerView.center.x, y:spinnerView.center.y + 50)
+        
+        DispatchQueue.main.async() {
+            spinnerView.addSubview(ai)
+            onView.addSubview(spinnerView)
+        }
+        
+        // if not connected to internet and cannot get data, wont go forever displaying the spinner
+        DispatchQueue.main.asyncAfter(deadline: .now() + 6) { // 6 seconds
+            print("Timer fired!")
+            self.removeSpinner(spinner: spinnerView)
+        }
+        return spinnerView
+    }
+    class func removeSpinner(spinner :UIView) {
+        DispatchQueue.main.async {
+            print("Timer stopped!")
+            spinner.removeFromSuperview()
+        }
+    }
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
